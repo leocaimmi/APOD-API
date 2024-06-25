@@ -51,7 +51,8 @@ public class Controlador {
         BufferedReader in = null;
         boolean rta = false;//"GET request failed: " + codigoRespuesta
 
-        try {
+        try
+        {
             URL urlAPOD = new URL(BASE_URL.toString());//Instancio una URL que es de la info de la API
             HttpURLConnection urlConnection = (HttpURLConnection) urlAPOD.openConnection();//Armo la conexion http
             urlConnection.setRequestMethod("GET");//HTTP me permite hacer el get de la pagina
