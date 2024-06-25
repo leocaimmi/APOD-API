@@ -1,7 +1,10 @@
 package org.example;
 
 import BBDD.ConectarBaseDeDatosMySql;
+import ControladorAPI.APODClase;
 import ControladorAPI.Controlador;
+
+import java.util.ArrayList;
 
 public class Main
 {
@@ -13,7 +16,8 @@ public class Main
         controlador.descargarImagenAPI();
         System.out.println(controlador.hacerPDFConImagenAPI());*/
         ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();
-        conectarBaseDeDatosMySql.cargarBaseDeDatos("hola","07-07-2007","hola");
+       ArrayList<APODClase> apodClases = conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
+        System.out.println(apodClases);
 
     }
 }

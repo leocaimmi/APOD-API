@@ -1,11 +1,14 @@
 package BBDD;
 
 
+import ControladorAPI.APODClase;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class ConectarBaseDeDatosMySql {
     //atributos
@@ -48,6 +51,35 @@ public class ConectarBaseDeDatosMySql {
         }
         return rta;
     }
+    public ArrayList<APODClase> obtenerAPODBaseDatos()
+    {
+        ArrayList<APODClase> listaBaseDeDatos= null;
+        try
+        {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM `apod`");
+            listaBaseDeDatos = new ArrayList<>();
+            while(resultSet.next())
+            {
+                APODClase auxAPOD = new APODClase();
+                auxAPOD.setTitle(resultSet.getString("titulo"));
+                auxAPOD.setExplanation(resultSet.getString("explicacion"));
+                //auxAPOD.setUrl(resultSet.getBlob("imagen"));todo fijarse para obtener URL con el blog y obtener una URL del mismo o la ruta local
+                auxAPOD.setDate(resultSet.getString("fecha"));
+                listaBaseDeDatos.add(auxAPOD);
 
-    
+            }
+            statement.close();
+            resultSet.close();
+            cerrarConexion();
+
+        } catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+return listaBaseDeDatos;
+    }
+
+
 }
