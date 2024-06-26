@@ -51,16 +51,17 @@ public class ConectarBaseDeDatosMySql {
         }
         return rta;
     }
-    public ArrayList<APODClase> obtenerAPODBaseDatos()
-    {
-        ArrayList<APODClase> listaBaseDeDatos= null;
-        try
-        {
+
+    public ArrayList<APODClase> obtenerAPODBaseDatos() {
+        ArrayList<APODClase> listaBaseDeDatos = null;
+       if(connection !=null)
+       {
+
+        try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM `apod`");
             listaBaseDeDatos = new ArrayList<>();
-            while(resultSet.next())
-            {
+            while (resultSet.next()) {
                 APODClase auxAPOD = new APODClase();
                 auxAPOD.setTitle(resultSet.getString("titulo"));
                 auxAPOD.setExplanation(resultSet.getString("explicacion"));
@@ -73,13 +74,50 @@ public class ConectarBaseDeDatosMySql {
             resultSet.close();
             cerrarConexion();
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-return listaBaseDeDatos;
+       }
+        return listaBaseDeDatos;
     }
+    public void cargarDato(APODClase aSubir) {
+        PreparedStatement statement = null;
+        FileInputStream fis = null;
 
+        if (connection != null) {
+            try {
+                // Ruta de la imagen en el repositorio local
+                File archivoImagen = new File("src/main/resources/location_NASA.jpg");
+                fis = new FileInputStream(archivoImagen);
 
+                // Preparar la consulta SQL
+                statement = connection.prepareStatement("INSERT INTO apod (titulo, fecha, imagen, explicacion) VALUES (?,?,?,?)");
+
+                // Cargo los datos al statement
+                statement.setString(1, aSubir.getTitle());
+                statement.setString(2, aSubir.getDate());
+                statement.setBlob(3, fis);
+                statement.setString(4, aSubir.getExplanation());
+
+                // Ejecuta la consulta de inserción
+                statement.executeUpdate();
+
+                // Cierra la consulta
+                statement.close();
+                fis.close();
+
+                System.out.println("Datos cargados correctamente.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (fis != null) fis.close();
+                    if (statement != null) statement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
 }
