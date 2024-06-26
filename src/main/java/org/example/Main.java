@@ -10,14 +10,16 @@ public class Main
 {
     public static void main(String[] args)
     {
-        /*Controlador controlador= new Controlador();
-        controlador.cargarCliente();
-        System.out.println(controlador);
-        controlador.descargarImagenAPI();
-        System.out.println(controlador.hacerPDFConImagenAPI());*/
-        ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();
-       ArrayList<APODClase> apodClases = conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
-        System.out.println(apodClases);
+        Controlador controlador= new Controlador();//
+        controlador.cargarCliente();//me conecto con la API
+        controlador.descargarImagenAPI();//descargo la imagen del dia
+        controlador.hacerPDFConImagenAPI();//con la imagen que descargue creo el PDF
+
+        ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
+        conectarBaseDeDatosMySql.cargarDato(controlador.getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
+
+
+
 
     }
 }
