@@ -10,21 +10,25 @@ public class Main
 {
     public static void main(String[] args)
     {
+        //todo ver como implementear un video/gif en el pdf
         /** API NASA APOD */
         Controlador controlador= new Controlador();
         controlador.cargarCliente();//me conecto con la API
+        controlador.descargarVideoAPI();
         controlador.descargarImagenAPI();//descargo la imagen del dia
-        //controlador.hacerPDFConImagenAPI();//con la imagen que descargue creo el PDF
+        controlador.hacerPDFConImagenAPI();//con la imagen que descargue creo el PDF
 
         /** Base de datos MySQL */
-        //ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
-        //conectarBaseDeDatosMySql.cargarDato(controlador.getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
-        //todo verificar si ya existe en la base de datos
-        //ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
-        //System.out.println(lista);
-
-
-
+        ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
+        if(!conectarBaseDeDatosMySql.verificarRepetidoXtitulo(controlador.getApodClase()))
+        {
+            conectarBaseDeDatosMySql.cargarDato(controlador.getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
+        }else
+        {
+            System.out.println("estoy repetido");
+        }
+            ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
+            System.out.println(lista);
 
     }
 }
