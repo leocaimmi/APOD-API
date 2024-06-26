@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import java.util.Scanner;
 
 
 public class Controlador {
@@ -78,7 +78,7 @@ public class Controlador {
                 APOD.setTitle(jsonObject.getString("title"));
                 APOD.setDate(jsonObject.getString("date"));
                 APOD.setExplanation(jsonObject.getString("explanation"));
-                APOD.setHdurl(jsonObject.getString("hdurl"));
+                //APOD.setHdurl(jsonObject.getString("hdurl"));
                 APOD.setUrl(jsonObject.getString("url"));
                 APOD.setMedia_type(jsonObject.getString("media_type"));
                 APOD.setService_version(jsonObject.getString("service_version"));
@@ -102,9 +102,46 @@ public class Controlador {
         }
         return rta;
     }
+    public void descargarVideoAPI()
+    {
+        String videoUrl = apodClase.getUrl(); // URL de la API
+        String downloadPath = "src/main/resources/video.mp4"; // Ruta donde se descargará el video
+        String ytdlpPath = "yt-dlp.exe"; // Ruta al ejecutable de yt-dlp
+        if(apodClase.getMedia_type().equalsIgnoreCase("video"))
+        {
+            try {
+                downloadVideo(ytdlpPath,videoUrl,downloadPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
+
+
+    }
+    private void downloadVideo(String ytdlpPath, String videoUrl, String downloadPath) throws IOException, InterruptedException {
+        ProcessBuilder builder = new ProcessBuilder(ytdlpPath, videoUrl, "-o", downloadPath);
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+
+        // Leer la salida del proceso para ver los mensajes de yt-dlp
+        try (Scanner scanner = new Scanner(process.getInputStream())) {
+            while (scanner.hasNextLine()) {
+                System.out.println(scanner.nextLine());
+            }
+        }
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new RuntimeException("Failed to download video. Exit code: " + exitCode);
+        }
+    }
     public void descargarImagenAPI() {
         try {
+           if(apodClase.getMedia_type().equalsIgnoreCase("image"))
+           {
             BufferedImage image = ImageIO.read(new URL(apodClase.getUrl()));//descargo la imagen desde la url que me da la API
             File outputFile = new File("src/main/resources" + File.separator + "location_NASA.jpg");
             // Sobrescribir la imagen si ya existe
@@ -112,8 +149,13 @@ public class Controlador {
                 outputFile.delete();
             }
             ImageIO.write(image, "jpg", outputFile);
-
-        } catch (IOException e) {
+           }
+//           else
+//           {
+//               System.out.println("SOY UN VIDEO");
+//           }
+        } catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
