@@ -53,9 +53,11 @@ public class ConectarBaseDeDatosMySql {
     {
         ArrayList<APODClase> listaBaseDeDatos = null;
         FileOutputStream fileOutputStream = null;
+        InputStream inputStream = null;
         ByteArrayOutputStream byteArrayOutputStream = null;
         Statement statement = null;
         ResultSet resultSet = null;
+
         if (connection != null)
         {
             try
@@ -69,30 +71,63 @@ public class ConectarBaseDeDatosMySql {
 
                     APODClase auxAPOD = new APODClase();
                     auxAPOD.setTitle(resultSet.getString("titulo"));
-                    auxAPOD.setExplanation(resultSet.getString("explicacion"));
                     auxAPOD.setDate(resultSet.getString("fecha"));
-                    // Obtener el Blob de la imagen
-                    Blob blob = resultSet.getBlob("imagen"); //todo si ya existe la imagen en la base de datos(binario) no subir
+                    auxAPOD.setExplanation(resultSet.getString("explicacion"));
+                    auxAPOD.setMedia_type(resultSet.getString("formato"));
 
-                    if (blob != null)
-                    {
-                        InputStream inputStream = blob.getBinaryStream();
-                        byteArrayOutputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int bytesRead = 0;
+                   if(auxAPOD.getMedia_type().equalsIgnoreCase("image"))
+                   {
+                       // Obtener el Blob de la imagen
+                       Blob blob = resultSet.getBlob("imagen"); //todo si ya existe la imagen en la base de datos(binario) no subir
 
-                        while ((bytesRead = inputStream.read(buffer)) != -1)
-                        {
-                            byteArrayOutputStream.write(buffer, 0, bytesRead);
-                        }
-                        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                        File imageFile = new File(""+auxAPOD.getTitle()+".jpg");
+                       if (blob != null)
+                       {
+                            inputStream = blob.getBinaryStream();
+                           byteArrayOutputStream = new ByteArrayOutputStream();
+                           byte[] buffer = new byte[1024];
+                           int bytesRead = 0;
 
-                        // Guardar los bytes de la imagen como un archivo JPG
-                        fileOutputStream = new FileOutputStream(imageFile);
-                        fileOutputStream.write(imageBytes);
+                           while ((bytesRead = inputStream.read(buffer)) != -1)
+                           {
+                               byteArrayOutputStream.write(buffer, 0, bytesRead);
+                           }
+                           byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                           File imageFile = new File(""+auxAPOD.getTitle()+".jpg");
 
-                    }
+                           // Guardar los bytes de la imagen como un archivo JPG
+                           fileOutputStream = new FileOutputStream(imageFile);
+                           fileOutputStream.write(imageBytes);
+
+                       }
+                   }
+                   else if(auxAPOD.getMedia_type().equalsIgnoreCase("video"))
+                   {
+                        // Obtener el Blob del video desde el ResultSet
+                       Blob blob = resultSet.getBlob("video");
+
+                       if (blob != null)
+                       {
+                            inputStream = blob.getBinaryStream();
+                           byteArrayOutputStream = new ByteArrayOutputStream();
+                           byte[] buffer = new byte[1024];
+                           int bytesRead = 0;
+
+                           // Leer los datos del InputStream y escribirlos en el ByteArrayOutputStream
+                           while ((bytesRead = inputStream.read(buffer)) != -1) {
+                               byteArrayOutputStream.write(buffer, 0, bytesRead);
+                           }
+
+                           byte[] videoBytes = byteArrayOutputStream.toByteArray();
+
+                           // Guardar los bytes del video como un archivo MP4
+                           File videoFile = new File("" + auxAPOD.getTitle() + ".mp4");
+                           fileOutputStream = new FileOutputStream(videoFile);
+                           fileOutputStream.write(videoBytes);
+
+                           System.out.println("Video descargado correctamente.");
+                       }
+
+                   }
 
 
                     listaBaseDeDatos.add(auxAPOD);
@@ -109,6 +144,7 @@ public class ConectarBaseDeDatosMySql {
                 {
                     statement.close();
                     resultSet.close();
+                    inputStream.close();
                     byteArrayOutputStream.close();
                     fileOutputStream.close();
                     cerrarConexion();
