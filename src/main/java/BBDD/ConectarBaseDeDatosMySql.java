@@ -49,7 +49,8 @@ public class ConectarBaseDeDatosMySql {
         return rta;
     }
 
-    public ArrayList<APODClase> obtenerAPODBaseDatos() {
+    public ArrayList<APODClase> obtenerAPODBaseDatos()
+    {
         ArrayList<APODClase> listaBaseDeDatos = null;
         FileOutputStream fileOutputStream = null;
         ByteArrayOutputStream byteArrayOutputStream = null;
@@ -123,40 +124,54 @@ public class ConectarBaseDeDatosMySql {
         return listaBaseDeDatos;
     }
 
-    public void cargarDato(APODClase aSubir) {
+    public void cargarDato(APODClase aSubir)
+    {
         PreparedStatement statement = null;
+        File archivoRecurso = null;
         FileInputStream fis = null;
-
-        if (connection != null) {
-            try {
-                // Ruta de la imagen en el repositorio local
-                File archivoImagen = new File("src/main/resources/location_NASA.jpg");
-                fis = new FileInputStream(archivoImagen);
+        if (connection != null)
+        {
+            try
+            {
 
                 // Preparar la consulta SQL
-                statement = connection.prepareStatement("INSERT INTO apod (titulo, fecha, imagen, explicacion) VALUES (?,?,?,?)");
+                statement = connection.prepareStatement("INSERT INTO apod (titulo, fecha, explicacion, formato, imagen, video) VALUES (?,?,?,?,?,?)");
 
                 // Cargo los datos al statement
                 statement.setString(1, aSubir.getTitle());
                 statement.setString(2, aSubir.getDate());
-                statement.setBlob(3, fis);
-                statement.setString(4, aSubir.getExplanation());
+                statement.setString(3, aSubir.getExplanation());
+                statement.setString(4,aSubir.getMedia_type());
+                if(aSubir.getMedia_type().equalsIgnoreCase("image"))
+                {
+                     archivoRecurso = new File("src/main/resources/location_NASA.jpg");
+                    fis = new FileInputStream(archivoRecurso);
+                    statement.setBlob(5, fis);
+                    statement.setNull(6, Types.BLOB); // Dejar video como NULL
+                }else if(aSubir.getMedia_type().equalsIgnoreCase("video"))
+                {
+                    archivoRecurso = new File("src/main/resources/video.mp4");
+                    fis = new FileInputStream(archivoRecurso);
+                    statement.setBlob(6, fis);
+                    statement.setNull(5, Types.BLOB); // Dejar imagen como NULL
+                }
 
                 // Ejecuta la consulta de inserción
                 statement.executeUpdate();
 
-                // Cierra la consulta
-                statement.close();
-                fis.close();
-
                 System.out.println("Datos cargados correctamente.");
-            } catch (Exception e) {
+            } catch (Exception e)
+            {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (fis != null) fis.close();
-                    if (statement != null) statement.close();
-                } catch (Exception e) {
+            } finally
+            {
+                // Cierra la consulta
+                try
+                {
+                    fis.close();
+                    statement.close();
+                } catch (Exception e)
+                {
                     e.printStackTrace();
                 }
             }
