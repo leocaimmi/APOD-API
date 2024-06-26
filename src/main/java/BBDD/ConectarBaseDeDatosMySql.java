@@ -3,10 +3,7 @@ package BBDD;
 
 import ControladorAPI.APODClase;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -54,32 +51,78 @@ public class ConectarBaseDeDatosMySql {
 
     public ArrayList<APODClase> obtenerAPODBaseDatos() {
         ArrayList<APODClase> listaBaseDeDatos = null;
-       if(connection !=null)
-       {
+        FileOutputStream fileOutputStream = null;
+        ByteArrayOutputStream byteArrayOutputStream = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        if (connection != null)
+        {
+            try
+            {
+                statement = connection.createStatement();
+                resultSet = statement.executeQuery("SELECT * FROM `apod`");
+                listaBaseDeDatos = new ArrayList<>();
 
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM `apod`");
-            listaBaseDeDatos = new ArrayList<>();
-            while (resultSet.next()) {
-                APODClase auxAPOD = new APODClase();
-                auxAPOD.setTitle(resultSet.getString("titulo"));
-                auxAPOD.setExplanation(resultSet.getString("explicacion"));
-                //auxAPOD.setUrl(resultSet.getBlob("imagen"));todo fijarse para obtener URL con el blog y obtener una URL del mismo o la ruta local
-                auxAPOD.setDate(resultSet.getString("fecha"));
-                listaBaseDeDatos.add(auxAPOD);
+                while (resultSet.next())
+                {
 
+                    APODClase auxAPOD = new APODClase();
+                    auxAPOD.setTitle(resultSet.getString("titulo"));
+                    auxAPOD.setExplanation(resultSet.getString("explicacion"));
+                    auxAPOD.setDate(resultSet.getString("fecha"));
+                    // Obtener el Blob de la imagen
+                    Blob blob = resultSet.getBlob("imagen"); //todo si ya existe la imagen en la base de datos(binario) no subir
+
+                    if (blob != null)
+                    {
+                        InputStream inputStream = blob.getBinaryStream();
+                        byteArrayOutputStream = new ByteArrayOutputStream();
+                        byte[] buffer = new byte[1024];
+                        int bytesRead = 0;
+
+                        while ((bytesRead = inputStream.read(buffer)) != -1)
+                        {
+                            byteArrayOutputStream.write(buffer, 0, bytesRead);
+                        }
+                        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+                        File imageFile = new File(""+auxAPOD.getTitle()+".jpg");
+
+                        // Guardar los bytes de la imagen como un archivo JPG
+                        fileOutputStream = new FileOutputStream(imageFile);
+                        fileOutputStream.write(imageBytes);
+
+                    }
+
+
+                    listaBaseDeDatos.add(auxAPOD);
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally
+            {
+
+                try
+                {
+                    statement.close();
+                    resultSet.close();
+                    byteArrayOutputStream.close();
+                    fileOutputStream.close();
+                    cerrarConexion();
+                } catch (SQLException e)
+                {
+                    e.printStackTrace();
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
-            statement.close();
-            resultSet.close();
-            cerrarConexion();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
-       }
         return listaBaseDeDatos;
     }
+
     public void cargarDato(APODClase aSubir) {
         PreparedStatement statement = null;
         FileInputStream fis = null;

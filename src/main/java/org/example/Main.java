@@ -10,13 +10,18 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Controlador controlador= new Controlador();//
+        /** API NASA APOD */
+        Controlador controlador= new Controlador();
         controlador.cargarCliente();//me conecto con la API
         controlador.descargarImagenAPI();//descargo la imagen del dia
-        controlador.hacerPDFConImagenAPI();//con la imagen que descargue creo el PDF
+        //controlador.hacerPDFConImagenAPI();//con la imagen que descargue creo el PDF
 
-        ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
-        conectarBaseDeDatosMySql.cargarDato(controlador.getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
+        /** Base de datos MySQL */
+        //ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
+        //conectarBaseDeDatosMySql.cargarDato(controlador.getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
+        //todo verificar si ya existe en la base de datos
+        //ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
+        //System.out.println(lista);
 
 
 
