@@ -48,6 +48,32 @@ public class ConectarBaseDeDatosMySql {
         }
         return rta;
     }
+    public boolean verificarRepetidoXtitulo(APODClase apodAux)
+    {
+        boolean rta = false;
+        if(connection!= null)//necesito tener acceso a la base de datos
+        {
+            Statement statement = null;
+            ResultSet resultSet = null;
+            try
+            {
+                // Preparar la consulta SQL
+
+                statement = connection.createStatement();
+                resultSet = statement.executeQuery("SELECT * FROM `apod`");
+               while(resultSet.next())
+               {
+                   if(apodAux.getTitle().equalsIgnoreCase(resultSet.getString("titulo")))
+                   {
+                        rta = true;//si el titulo coindice son iguales
+                   }
+               }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return rta;
+    }
 
     public ArrayList<APODClase> obtenerAPODBaseDatos()
     {
