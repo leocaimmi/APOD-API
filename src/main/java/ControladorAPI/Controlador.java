@@ -1,9 +1,20 @@
 package ControladorAPI;
 
 
+import com.itextpdf.kernel.colors.ColorConstants;
+import com.itextpdf.kernel.colors.DeviceRgb;
+import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfName;
+import com.itextpdf.kernel.pdf.PdfString;
 import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.action.PdfAction;
+import com.itextpdf.kernel.pdf.annot.PdfFileAttachmentAnnotation;
+import com.itextpdf.kernel.pdf.annot.PdfScreenAnnotation;
+
+import com.itextpdf.kernel.pdf.filespec.PdfFileSpec;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.IBlockElement;
 import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.properties.HorizontalAlignment;
@@ -12,9 +23,9 @@ import io.github.cdimascio.dotenv.Dotenv;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -160,24 +171,17 @@ public class Controlador {
         }
     }
 
-    public String hacerPDFConImagenAPI() {
+    public String hacerPDFConRecursoAPI()
+    {
         String rta = "";
         String rutaImagen = "src/main/resources/location_NASA.jpg";
+        String rutaVideo = "src/main/resources/video.mp4";
+        File recurso = null;
         try
         {
-            // Verificar si la imagen existe
-            File imageFile = new File(rutaImagen);
-            if (!imageFile.exists())
-            {
-                rta = "La imagen no existe en la ruta especificada: " + rutaImagen;
-            }
-            else
-            {
-                rta = "ruta correcta: "+rutaImagen;
-            }
 
             // Crear el documento PDF
-            PdfWriter pdfWriter = new PdfWriter("TextoNASAAPI.pdf");
+            PdfWriter pdfWriter = new  PdfWriter("TextoNASAAPI.pdf");
             PdfDocument pdfDocument = new PdfDocument(pdfWriter);
             Document document = new Document(pdfDocument);
 
@@ -189,13 +193,50 @@ public class Controlador {
 
             // Añadir el fecha
             document.add(new Paragraph(apodClase.getDate()).setFontSize(12));
-            // Añadir la imagen
-            ImageData imageData = ImageDataFactory.create(rutaImagen);
-            Image pdfImage = new Image(imageData);
-            // pdfImage.scaleToFit(550, 550);// Ajustar el tamaño de la imagen
-            pdfImage.setAutoScale(true).setHorizontalAlignment(HorizontalAlignment.CENTER);
+            // Verificar si la imagen existe o el video existe
+            if(apodClase.getMedia_type().equalsIgnoreCase("image"))
+            {
+                recurso = new File(rutaImagen);
+                // Añadir la imagen
+                if (!recurso.exists())
+                {
+                    rta = "La imagen no existe en la ruta especificada: " + rutaImagen;
+                }
+                else
+                {
 
-            document.add(pdfImage);
+
+                    ImageData imageData = ImageDataFactory.create(rutaImagen);
+                    Image pdfImage = new Image(imageData);
+                    // pdfImage.scaleToFit(550, 550);// Ajustar el tamaño de la imagen
+                    pdfImage.setAutoScale(true).setHorizontalAlignment(HorizontalAlignment.CENTER);
+
+                    document.add(pdfImage);
+                    rta = "ruta correcta: "+rutaImagen;
+                }
+            }else if(apodClase.getMedia_type().equalsIgnoreCase("video"))
+            {
+                recurso = new File(rutaVideo);
+                if (!recurso.exists())
+                {
+                    rta = "El video no existe en la ruta especificada: " + rutaImagen;
+                }
+                else
+                {
+                    // Adjuntar el archivo de video al PDF
+
+                    PdfFileSpec fileSpec = PdfFileSpec.createEmbeddedFileSpec(pdfDocument, recurso.getAbsolutePath(), null, recurso.getName(), null,null);
+                    PdfFileAttachmentAnnotation fileAttachment = new PdfFileAttachmentAnnotation(new Rectangle(175, 375, 200, 200), fileSpec);
+                    fileAttachment.setColor(ColorConstants.BLUE);
+                    fileAttachment.setTitle(new PdfString("Video adjunto"));
+                    fileAttachment.setContents("Doble click para abrir el video");
+                    pdfDocument.getLastPage().addAnnotation(fileAttachment);
+
+                    rta = "ruta correcta: "+rutaImagen;
+                }
+            }
+
+
 
             // Cerrar el documento
             document.close();
