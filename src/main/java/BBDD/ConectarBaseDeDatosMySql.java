@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class ConectarBaseDeDatosMySql {
     //atributos
-    private String driver = "com.mysql.jdbc.Driver";
+    private String driver = "com.mysql.cj.jdbc.Driver";
     private String urlBaseDatos = "jdbc:mysql://127.0.0.1/apod_images";
     private String usuario = "root";//default
     private String contrasenia = "";//default
