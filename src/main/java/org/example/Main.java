@@ -24,7 +24,7 @@ public class Main
             System.out.println("video");
             controlador.descargarVideoAPI();
         }
-        controlador.hacerPDFConRecursoAPI();//con el recurso que descargue creo el PDF
+        System.out.println(controlador.hacerPDFConRecursoAPI());//con el recurso que descargue creo el PDF
 
         /** Base de datos MySQL */
         ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
