@@ -83,7 +83,7 @@ public class ConectarBaseDeDatosMySql {
         ByteArrayOutputStream byteArrayOutputStream = null;
         Statement statement = null;
         ResultSet resultSet = null;
-
+        String tituloSinCaracterEspecial= null;// las / no permiten descargar video o image desde la base de datos entonces la formateo pero cuando descargo asi en la base de datos queda como me la da la API
         if (connection != null)
         {
             try
@@ -97,6 +97,7 @@ public class ConectarBaseDeDatosMySql {
 
                     APODClase auxAPOD = new APODClase();
                     auxAPOD.setTitle(resultSet.getString("titulo"));
+                     tituloSinCaracterEspecial =auxAPOD.getTitle().replace("/","_");// titulo =auxAPOD.getTitle().replace("/","_");
                     auxAPOD.setDate(resultSet.getString("fecha"));
                     auxAPOD.setExplanation(resultSet.getString("explicacion"));
                     auxAPOD.setMedia_type(resultSet.getString("formato"));
@@ -118,7 +119,9 @@ public class ConectarBaseDeDatosMySql {
                                byteArrayOutputStream.write(buffer, 0, bytesRead);
                            }
                            byte[] imageBytes = byteArrayOutputStream.toByteArray();
-                           File imageFile = new File(""+auxAPOD.getTitle()+".jpg");
+                           tituloSinCaracterEspecial =auxAPOD.getTitle().replace("/","_");
+
+                           File imageFile = new File(""+tituloSinCaracterEspecial+".jpg");
 
                            // Guardar los bytes de la imagen como un archivo JPG
                            fileOutputStream = new FileOutputStream(imageFile);
@@ -144,9 +147,9 @@ public class ConectarBaseDeDatosMySql {
                            }
 
                            byte[] videoBytes = byteArrayOutputStream.toByteArray();
-
+                           tituloSinCaracterEspecial =auxAPOD.getTitle().replace("/","_");
                            // Guardar los bytes del video como un archivo MP4
-                           File videoFile = new File("" + auxAPOD.getTitle() + ".mp4");
+                           File videoFile = new File("" +tituloSinCaracterEspecial+ ".mp4");
                            fileOutputStream = new FileOutputStream(videoFile);
                            fileOutputStream.write(videoBytes);
 
@@ -160,9 +163,9 @@ public class ConectarBaseDeDatosMySql {
                 }
 
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+               e.printStackTrace();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             } finally
             {
 
