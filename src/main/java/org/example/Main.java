@@ -35,8 +35,8 @@ public class Main
         {
             System.out.println("estoy repetido\n");
         }
-            ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
-            System.out.println(lista);
+            //ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
+            //System.out.println(lista);
 
     }
 }
