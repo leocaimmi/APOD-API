@@ -75,118 +75,108 @@ public class ConectarBaseDeDatosMySql {
         return rta;
     }
 
-    public ArrayList<APODClase> obtenerAPODBaseDatos()
-    {
-        ArrayList<APODClase> listaBaseDeDatos = null;
-        FileOutputStream fileOutputStream = null;
-        InputStream inputStream = null;
-        ByteArrayOutputStream byteArrayOutputStream = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String tituloSinCaracterEspecial= null;
+    public ArrayList<APODClase> obtenerAPODBaseDatos() {
+        ArrayList<APODClase> listaBaseDeDatos = new ArrayList<>();
+
         if (connection != null)
         {
-            try
-            {
-                statement = connection.createStatement();
-                resultSet = statement.executeQuery("SELECT * FROM `apod`");
-                listaBaseDeDatos = new ArrayList<>();
+            try (Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery("SELECT * FROM `apod`")) {
 
                 while (resultSet.next())
                 {
-
                     APODClase auxAPOD = new APODClase();
                     auxAPOD.setTitle(resultSet.getString("titulo"));
-                     tituloSinCaracterEspecial =auxAPOD.getTitle().replace("/","_");// las / no permiten descargar video o image desde la base de datos entonces la formateo pero cuando descargo asi en la base de datos queda como me la da la API
+                    String tituloSinCaracterEspecial = auxAPOD.getTitle().replace("/", "_");
                     auxAPOD.setDate(resultSet.getString("fecha"));
                     auxAPOD.setExplanation(resultSet.getString("explicacion"));
                     auxAPOD.setMedia_type(resultSet.getString("formato"));
 
-                   if(auxAPOD.getMedia_type().equalsIgnoreCase("image"))
-                   {
-                       // Obtener el Blob de la imagen
-                       Blob blob = resultSet.getBlob("imagen");
-
-                       if (blob != null)
-                       {
-                            inputStream = blob.getBinaryStream();
-                           byteArrayOutputStream = new ByteArrayOutputStream();
-                           byte[] buffer = new byte[1024];
-                           int bytesRead = 0;
-
-                           while ((bytesRead = inputStream.read(buffer)) != -1)
-                           {
-                               byteArrayOutputStream.write(buffer, 0, bytesRead);
-                           }
-                           byte[] imageBytes = byteArrayOutputStream.toByteArray();
-
-
-                           File imageFile = new File("recursosBD/"+tituloSinCaracterEspecial+".jpg");
-
-                           // Guardar los bytes de la imagen como un archivo JPG
-                           fileOutputStream = new FileOutputStream(imageFile);
-                           fileOutputStream.write(imageBytes);
-
-                       }
-                   }
-                   else if(auxAPOD.getMedia_type().equalsIgnoreCase("video"))
-                   {
-                        // Obtener el Blob del video desde el ResultSet
-                       Blob blob = resultSet.getBlob("video");
-
-                       if (blob != null)
-                       {
-                            inputStream = blob.getBinaryStream();
-                           byteArrayOutputStream = new ByteArrayOutputStream();
-                           byte[] buffer = new byte[1024];
-                           int bytesRead = 0;
-
-                           // Leer los datos del InputStream y escribirlos en el ByteArrayOutputStream
-                           while ((bytesRead = inputStream.read(buffer)) != -1) {
-                               byteArrayOutputStream.write(buffer, 0, bytesRead);
-                           }
-
-                           byte[] videoBytes = byteArrayOutputStream.toByteArray();
-
-                           // Guardar los bytes del video como un archivo MP4
-                           File videoFile = new File("recursosBD/" +tituloSinCaracterEspecial+ ".mp4");
-                           fileOutputStream = new FileOutputStream(videoFile);
-                           fileOutputStream.write(videoBytes);
-
-                           System.out.println("Video descargado correctamente.");
-                       }
-
-                   }
-
-
+                    if (auxAPOD.getMedia_type().equalsIgnoreCase("image"))
+                    {
+                        Blob blob = resultSet.getBlob("imagen");
+                        if (blob != null && blob.length() > 0)
+                        {
+                            guardarImagenVideoEnRecursos(blob,"image","recursosBD/" + tituloSinCaracterEspecial + ".jpg");
+                        } else
+                        {
+                            System.out.println("El Blob de la imagen está vacío o es nulo para: " + tituloSinCaracterEspecial);
+                        }
+                    } else if (auxAPOD.getMedia_type().equalsIgnoreCase("video"))
+                    {
+                        Blob blob = resultSet.getBlob("video");
+                        if (blob != null && blob.length() > 0)
+                        {
+                            guardarImagenVideoEnRecursos(blob,"video","recursosBD/" + tituloSinCaracterEspecial + ".mp4");
+                        } else
+                        {
+                            System.out.println("El Blob del video está vacío o es nulo para: " + tituloSinCaracterEspecial);
+                        }
+                    }
                     listaBaseDeDatos.add(auxAPOD);
                 }
-
-            } catch (SQLException e) {
-               e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally
+            } catch (SQLException e)
             {
-
-                try
-                {
-                    statement.close();
-                    resultSet.close();
-                    inputStream.close();
-                    byteArrayOutputStream.close();
-                    fileOutputStream.close();
-                    cerrarConexion();
-                } catch (SQLException e)
-                {
-                    e.printStackTrace();
-                } catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
         }
         return listaBaseDeDatos;
+    }
+    private void guardarImagenVideoEnRecursos(Blob blob,String formato,String filePath)
+    {
+        if(formato.equalsIgnoreCase("image"))
+        {
+            boolean rta = guardarBlobEnArchivo(blob,filePath);
+            if (!rta)
+            {
+                System.out.println("Error al guardar la imagen: " + filePath);
+            }
+        }
+        else if(formato.equalsIgnoreCase("video"))
+        {
+            boolean rta = guardarBlobEnArchivo(blob, filePath);
+            if (!rta)
+            {
+                System.out.println("Error al guardar el video: " + filePath);
+            }
+        }
+
+    }
+
+
+
+    private boolean guardarBlobEnArchivo(Blob blob, String filePath)
+    {
+        boolean rta = false;
+        try
+        {
+            InputStream inputStream = blob.getBinaryStream();
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath));
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1)
+            {
+                byteArrayOutputStream.write(buffer, 0, bytesRead);
+            }
+            byte[] fileBytes = byteArrayOutputStream.toByteArray();
+
+            // Verificación del tamaño de los bytes leídos
+            if (fileBytes.length == 0) {
+                System.out.println("El archivo leído está vacío: " + filePath);
+                return false;
+            }
+
+            // Guardar el archivo en el disco
+            fileOutputStream.write(fileBytes);
+            System.out.println("Archivo descargado correctamente: " + filePath + " con tamaño: " + fileBytes.length);
+            rta = true;
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
+        return rta;
     }
 
     public void cargarDato(APODClase aSubir)
