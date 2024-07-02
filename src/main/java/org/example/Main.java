@@ -12,7 +12,7 @@ public class Main
     {
 
         /** API NASA APOD */
-        Controlador controlador= new Controlador();
+       Controlador controlador= new Controlador();
         controlador.cargarCliente();//me conecto con la API
         if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
         {
@@ -35,8 +35,8 @@ public class Main
         {
             System.out.println("estoy repetido\n");
         }
-            //ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
-            //System.out.println(lista);
+            ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
+            System.out.println(lista);
 
     }
 }
