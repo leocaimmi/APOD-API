@@ -121,7 +121,7 @@ public class ConectarBaseDeDatosMySql {
                            byte[] imageBytes = byteArrayOutputStream.toByteArray();
 
 
-                           File imageFile = new File(""+tituloSinCaracterEspecial+".jpg");
+                           File imageFile = new File("recursosBD/"+tituloSinCaracterEspecial+".jpg");
 
                            // Guardar los bytes de la imagen como un archivo JPG
                            fileOutputStream = new FileOutputStream(imageFile);
@@ -149,7 +149,7 @@ public class ConectarBaseDeDatosMySql {
                            byte[] videoBytes = byteArrayOutputStream.toByteArray();
 
                            // Guardar los bytes del video como un archivo MP4
-                           File videoFile = new File("" +tituloSinCaracterEspecial+ ".mp4");
+                           File videoFile = new File("recursosBD/" +tituloSinCaracterEspecial+ ".mp4");
                            fileOutputStream = new FileOutputStream(videoFile);
                            fileOutputStream.write(videoBytes);
 
