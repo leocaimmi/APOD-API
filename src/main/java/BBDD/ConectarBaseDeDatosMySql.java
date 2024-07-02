@@ -77,7 +77,7 @@ public class ConectarBaseDeDatosMySql {
 
     public ArrayList<APODClase> obtenerAPODBaseDatos() {
         ArrayList<APODClase> listaBaseDeDatos = new ArrayList<>();
-
+        String tituloSinCaracterEspecial = null;
         if (connection != null)
         {
             try (Statement statement = connection.createStatement();
@@ -87,7 +87,21 @@ public class ConectarBaseDeDatosMySql {
                 {
                     APODClase auxAPOD = new APODClase();
                     auxAPOD.setTitle(resultSet.getString("titulo"));
-                    String tituloSinCaracterEspecial = auxAPOD.getTitle().replace("/", "_");
+                    tituloSinCaracterEspecial = auxAPOD.getTitle();
+                    //ESTO ES FUNDAMENTAL, SI EL TITULO CONTIENE CARACTERES ESPECIALES HAY QUE SACARLOS SINO CORTA EL NOMBRE Y NO PERMITE DESCARGAR DE LA BASE DE DATOS
+                    if(auxAPOD.getTitle().contains("/"))
+                    {
+                        tituloSinCaracterEspecial = auxAPOD.getTitle().replace("/", "_");
+
+                    }else if(auxAPOD.getTitle().contains(":"))
+                    {
+                        tituloSinCaracterEspecial = auxAPOD.getTitle().replace(":", " ");
+                    }
+                    else if(auxAPOD.getTitle().contains(","))
+                    {
+                        tituloSinCaracterEspecial = auxAPOD.getTitle().replace(",", " ");
+                    }
+
                     auxAPOD.setDate(resultSet.getString("fecha"));
                     auxAPOD.setExplanation(resultSet.getString("explicacion"));
                     auxAPOD.setMedia_type(resultSet.getString("formato"));
@@ -97,7 +111,7 @@ public class ConectarBaseDeDatosMySql {
                         Blob blob = resultSet.getBlob("imagen");
                         if (blob != null && blob.length() > 0)
                         {
-                            guardarImagenVideoEnRecursos(blob,"image","recursosBD/" + tituloSinCaracterEspecial + ".jpg");
+                            guardarImagenVideoEnRecursos(blob,"image","recursosBD/image/" + tituloSinCaracterEspecial + ".jpg");
                         } else
                         {
                             System.out.println("El Blob de la imagen está vacío o es nulo para: " + tituloSinCaracterEspecial);
@@ -107,11 +121,21 @@ public class ConectarBaseDeDatosMySql {
                         Blob blob = resultSet.getBlob("video");
                         if (blob != null && blob.length() > 0)
                         {
-                            guardarImagenVideoEnRecursos(blob,"video","recursosBD/" + tituloSinCaracterEspecial + ".mp4");
+                            guardarImagenVideoEnRecursos(blob,"video","recursosBD/video/" + tituloSinCaracterEspecial + ".mp4");
                         } else
                         {
                             System.out.println("El Blob del video está vacío o es nulo para: " + tituloSinCaracterEspecial);
                         }
+                    }
+
+                    Blob blob = resultSet.getBlob("pdf");
+                    if (blob != null && blob.length() > 0)
+                    {
+                        ;
+                        guardarBlobEnArchivo(blob,"recursosBD/pdf/"+tituloSinCaracterEspecial+".pdf");
+                    } else
+                    {
+                        System.out.println("El Blob del pdf está vacío o es nulo para: " + tituloSinCaracterEspecial);
                     }
                     listaBaseDeDatos.add(auxAPOD);
                 }
@@ -141,20 +165,20 @@ public class ConectarBaseDeDatosMySql {
             }
         }
 
+
     }
-
-
 
     private boolean guardarBlobEnArchivo(Blob blob, String filePath)
     {
         boolean rta = false;
         try
         {
+
             InputStream inputStream = blob.getBinaryStream();
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath));
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[4096];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1)
             {
@@ -190,7 +214,7 @@ public class ConectarBaseDeDatosMySql {
             {
 
                 // Preparar la consulta SQL
-                statement = connection.prepareStatement("INSERT INTO apod (titulo, fecha, explicacion, formato, imagen, video) VALUES (?,?,?,?,?,?)");
+                statement = connection.prepareStatement("INSERT INTO apod (titulo, fecha, explicacion, formato, imagen, video, pdf) VALUES (?,?,?,?,?,?,?)");
 
                 // Cargo los datos al statement
                 statement.setString(1, aSubir.getTitle());
@@ -210,6 +234,9 @@ public class ConectarBaseDeDatosMySql {
                     statement.setBlob(6, fis);
                     statement.setNull(5, Types.BLOB); // Dejar imagen como NULL
                 }
+                archivoRecurso = new File("TextoNASAAPI.pdf");
+                fis = new FileInputStream(archivoRecurso);
+                statement.setBlob(7,fis);
 
                 // Ejecuta la consulta de inserción
                 statement.executeUpdate();
