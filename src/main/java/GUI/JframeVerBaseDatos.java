@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import javax.swing.*;
+
 /**
  *
  * @author Gc
@@ -22,6 +24,8 @@ public class JframeVerBaseDatos extends javax.swing.JFrame {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
+        ImageIcon imageIcon = new ImageIcon("src/main/resources/icono.png");
+        setIconImage(imageIcon.getImage());
         setVisible(true);
     }
 

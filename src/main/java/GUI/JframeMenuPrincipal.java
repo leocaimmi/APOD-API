@@ -4,6 +4,9 @@
  */
 package GUI;
 
+import javax.swing.*;
+import java.util.Objects;
+
 /**
  *
  * @author Gc
@@ -26,6 +29,8 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
+        ImageIcon imageIcon = new ImageIcon("src/main/resources/icono.png");
+        setIconImage(imageIcon.getImage());
         setVisible(true);
     }
 

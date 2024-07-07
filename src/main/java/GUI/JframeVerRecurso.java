@@ -4,6 +4,8 @@
  */
 package GUI;
 
+import javax.swing.*;
+
 /**
  *
  * @author Gc
@@ -18,10 +20,14 @@ public class JframeVerRecurso extends javax.swing.JFrame {
     /**
      * Creates new form JframeVerRecurso
      */
-    public JframeVerRecurso() {
+    public JframeVerRecurso()
+    {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
+        ImageIcon imageIcon = new ImageIcon("src/main/resources/icono.png");
+        setIconImage(imageIcon.getImage());
+
         setVisible(true);
     }
 
