@@ -13,7 +13,7 @@ public class Main
     {
 
         /** API NASA APOD */
-       Controlador controlador= new Controlador();
+      /* Controlador controlador= new Controlador();
         controlador.cargarCliente();//me conecto con la API
         if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
         {
@@ -28,17 +28,17 @@ public class Main
         System.out.println(controlador.hacerPDFConRecursoAPI());//con el recurso que descargue creo el PDF
 
         /** Base de datos MySQL */
-        ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
+        /*ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
         if(!conectarBaseDeDatosMySql.verificarRepetidoXtitulo(controlador.getApodClase()))
         {
             conectarBaseDeDatosMySql.cargarDato(controlador.getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
         }else
         {
             System.out.println("estoy repetido\n");
-        }
+        }*/
 //            ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
 //            System.out.println(lista);
-//        JframeMenuPrincipal jframeMenuPrincipal = new JframeMenuPrincipal();
-//        jframeMenuPrincipal.setVisible(true);
+        JframeMenuPrincipal jframeMenuPrincipal = new JframeMenuPrincipal();
+        jframeMenuPrincipal.setVisible(true);
     }
 }
