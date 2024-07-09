@@ -4,16 +4,15 @@
  */
 package GUI;
 
+import ControladorAPI.Controlador;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.Objects;
 
 /**
  *
  * @author Gc
  */
-import javax.swing.*;
-import java.awt.*;
 
 public class JframeMenuPrincipal extends javax.swing.JFrame {
     // Variables declaration - do not modify
@@ -24,10 +23,15 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jTitulo;
     private javax.swing.JButton jVerBaseDatos;
     private javax.swing.JButton jVerFotoVideo;
+    private static Controlador controlador = null;
     // End of variables declaration
 
     public JframeMenuPrincipal() //todo agregar esto para el fondo default  String pathPictureOfTheDay
     {
+        //Apertura API NASA
+        conectarAPINASA();
+
+
         initComponents("src/main/resources/fondoDefault.png");
         setResizable(false);
         setLocationRelativeTo(null);
@@ -35,7 +39,43 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         setIconImage(imageIcon.getImage());
         setVisible(true);
     }
+    public static void conectarAPINASA()
+    {
+        /** API NASA APOD */
+       if(controlador == null)
+       {
+           controlador= new Controlador();
+           controlador.cargarCliente();//me conecto con la API
+       }
+        //       else
+//       {
+//           //todo agregar popup de error con la conexion
+//       }
 
+    }
+    public static void descargarRecursoAPINASA()
+    {
+       if(controlador != null)
+       {
+           if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
+           {
+               System.out.println("image");
+               controlador.descargarImagenAPI();//descargo la imagen del dia
+           }
+           else if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("video"))
+           {
+               System.out.println("video");
+               controlador.descargarVideoAPI();
+           }
+       }
+//       else
+//       {
+//           //todo agregar popup de error con la conexion
+//       }
+
+
+
+    }
     private void initComponents(String pathFondo) {
 
         jMenuPrincipal = new javax.swing.JPanel();
@@ -164,6 +204,7 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
 
     private void jBotonGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+
     }
 
     private void jVerBaseDatosActionPerformed(java.awt.event.ActionEvent evt) {
