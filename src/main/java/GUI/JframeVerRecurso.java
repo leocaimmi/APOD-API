@@ -121,7 +121,7 @@ public class JframeVerRecurso extends javax.swing.JFrame {
     private void jBotonVolverActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
         String path = "src/main/resources/location_NASA.jpg";//ruta, si no existe se encarga de poner la default el constructor
-        boolean rta= JframeMenuPrincipal.verificarRecursoExistente(path);
+        boolean rta= JframeMenuPrincipal.verificarSiNoExisteElArchivo(path);
         if(rta)
         {
             JframeMenuPrincipal menuPrincipal = new JframeMenuPrincipal(null);//si es true no existe la imagen del dia

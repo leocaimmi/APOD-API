@@ -5,7 +5,6 @@
 package GUI;
 
 import javax.swing.*;
-import java.io.File;
 
 /**
  *
@@ -130,7 +129,7 @@ public class JframeVerBaseDatos extends javax.swing.JFrame {
         // TODO add your handling code here:
         String path = "src/main/resources/location_NASA.jpg";//ruta, si no existe se encarga de poner la default el constructor
 
-      boolean rta= JframeMenuPrincipal.verificarRecursoExistente(path);
+      boolean rta= JframeMenuPrincipal.verificarSiNoExisteElArchivo(path);
         if(rta)
         {
 
