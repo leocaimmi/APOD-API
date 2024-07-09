@@ -57,7 +57,7 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
     {
        if(controlador != null)
        {
-           if(!controlador.getApodClase().isRecurso())
+           if(!controlador.getApodClase().isRecurso()|| verificarSiNoExisteElArchivo("src/main/resources/location_NASA.jpg")|| verificarSiNoExisteElArchivo("src/main/resources/video.mp4"))//si el recurso es false o si no existe la imagen la descargo
            {
                if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
                {
@@ -85,7 +85,7 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
 
 
     }
-    public static boolean verificarRecursoExistente(String path)
+    public static boolean verificarSiNoExisteElArchivo(String path)
     {
 
         boolean rta= false;
