@@ -26,7 +26,7 @@ public class Main
             controlador.descargarVideoAPI();
         }
         System.out.println(controlador.hacerPDFConRecursoAPI());//con el recurso que descargue creo el PDF
-
+*/
         /** Base de datos MySQL */
         /*ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos
         if(!conectarBaseDeDatosMySql.verificarRepetidoXtitulo(controlador.getApodClase()))
@@ -38,7 +38,7 @@ public class Main
         }*/
 //            ArrayList<APODClase> lista= conectarBaseDeDatosMySql.obtenerAPODBaseDatos();
 //            System.out.println(lista);
-        JframeMenuPrincipal jframeMenuPrincipal = new JframeMenuPrincipal();
+        JframeMenuPrincipal jframeMenuPrincipal = new JframeMenuPrincipal(null);
         jframeMenuPrincipal.setVisible(true);
     }
 }
