@@ -119,9 +119,18 @@ public class JframeVerRecurso extends javax.swing.JFrame {
 
     private void jBotonVolverActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
-        JframeMenuPrincipal jframeMenuPrincipal = new JframeMenuPrincipal();
-        jframeMenuPrincipal.setVisible(true);
-        setVisible(false);
+        String path = "src/main/resources/location_NASA.jpg";//ruta, si no existe se encarga de poner la default el constructor
+        boolean rta= JframeMenuPrincipal.verificarRecursoExistente(path);
+        if(rta)
+        {
+            JframeMenuPrincipal menuPrincipal = new JframeMenuPrincipal(null);//si es true no existe la imagen del dia
+            setVisible(false);
+        }
+        else
+        {
+            JframeMenuPrincipal menuPrincipal = new JframeMenuPrincipal(path);//si es true no existe la imagen del dia
+            setVisible(false);
+        }
 
     }
 
