@@ -33,7 +33,6 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         conectarAPINASA();
         initComponents(pathFondo);
 
-
         setResizable(false);
         setLocationRelativeTo(null);
         ImageIcon imageIcon = new ImageIcon("src/main/resources/icono.png");
@@ -58,16 +57,25 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
     {
        if(controlador != null)
        {
-           if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
+           if(!controlador.getApodClase().isRecurso())
            {
-               System.out.println("image");
-               controlador.descargarImagenAPI();//descargo la imagen del dia
+               if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
+               {
+                   System.out.println("image");
+                   controlador.descargarImagenAPI();//descargo la imagen del dia
+               }
+               else if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("video"))
+               {
+                   System.out.println("video");
+                   controlador.descargarVideoAPI();
+               }
+               controlador.getApodClase().setRecurso(true);
            }
-           else if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("video"))
-           {
-               System.out.println("video");
-               controlador.descargarVideoAPI();
-           }
+//           else
+//           {
+//               //todo agregar PopUp de que ya existe o ver
+//           }
+
        }
 //       else
 //       {
@@ -108,12 +116,12 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
                     icon = new ImageIcon("src/main/resources/fondoDefault.png"); // ruta
                     img = icon.getImage();
                    g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
-                   System.out.println("HOLAAAA");
+
                }
                else
                {
                    g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
-                   System.out.println("HOLAAAA2");
+
                }
             }
         };

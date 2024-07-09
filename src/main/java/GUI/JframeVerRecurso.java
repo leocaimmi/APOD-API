@@ -23,12 +23,13 @@ public class JframeVerRecurso extends javax.swing.JFrame {
      */
     public JframeVerRecurso()
     {
+        JframeMenuPrincipal.descargarRecursoAPINASA();
+        //JfrEsperaPopUp JfrEsperaPopUp = new JfrEsperaPopUp(this,"Descargando recurso");
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
         ImageIcon imageIcon = new ImageIcon("src/main/resources/icono.png");
         setIconImage(imageIcon.getImage());
-
         setVisible(true);
     }
 

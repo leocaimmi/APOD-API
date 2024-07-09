@@ -10,6 +10,7 @@ public class APODClase
     private String service_version;
     private String title;
     private String url;
+    private boolean recurso;
     //constructores
  public APODClase()
  {
@@ -20,6 +21,7 @@ public class APODClase
     service_version= "";
     title= "";
     url= "";
+   recurso = false;
  }
 
  public APODClase(String date, String explanation, String hdurl, String media_type, String service_version, String title, String url) {
@@ -30,6 +32,7 @@ public class APODClase
   this.service_version = service_version;
   this.title = title;
   this.url = url;
+  recurso = false;
  }
  //getters y setters
 
@@ -88,18 +91,28 @@ public class APODClase
  public void setUrl(String url) {
   this.url = url;
  }
+
+ public boolean isRecurso() {
+  return recurso;
+ }
+
+ public void setRecurso(boolean recurso) {
+  this.recurso = recurso;
+ }
  //metodos
+
 
  @Override
  public String toString() {
   return "APODClase{" +
-          "\n"+"date='" + date + '\'' +
-          "\n"+", explanation='" + explanation + '\'' +
-          "\n"+", hdurl='" + hdurl + '\'' +
-          "\n"+", media_type='" + media_type + '\'' +
-          "\n"+", service_version='" + service_version + '\'' +
-          "\n"+", title='" + title + '\'' +
-          "\n"+ ", url='" + url + '\'' +
+          "date='" + date + '\'' +
+          ", explanation='" + explanation + '\'' +
+          ", hdurl='" + hdurl + '\'' +
+          ", media_type='" + media_type + '\'' +
+          ", service_version='" + service_version + '\'' +
+          ", title='" + title + '\'' +
+          ", url='" + url + '\'' +
+          ", recurso=" + recurso +
           '}';
  }
 }
