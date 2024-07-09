@@ -5,6 +5,7 @@
 package GUI;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -41,7 +42,15 @@ public class JframeVerRecurso extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jPanelRecurso = new javax.swing.JPanel();
+        jPanelRecurso = new javax.swing.JPanel()
+        {
+            ImageIcon icon = new ImageIcon("src/main/resources/location_NASA.jpg"); // ruta
+            Image img = icon.getImage();
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
         jBotonVolver = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
