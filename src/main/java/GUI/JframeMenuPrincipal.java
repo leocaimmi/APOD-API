@@ -8,6 +8,7 @@ import ControladorAPI.Controlador;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 /**
  *
@@ -26,13 +27,13 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
     private static Controlador controlador = null;
     // End of variables declaration
 
-    public JframeMenuPrincipal() //todo agregar esto para el fondo default  String pathPictureOfTheDay
+    public JframeMenuPrincipal(String pathFondo)
     {
         //Apertura API NASA
         conectarAPINASA();
+        initComponents(pathFondo);
 
 
-        initComponents("src/main/resources/fondoDefault.png");
         setResizable(false);
         setLocationRelativeTo(null);
         ImageIcon imageIcon = new ImageIcon("src/main/resources/icono.png");
@@ -76,6 +77,17 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
 
 
     }
+    public static boolean verificarRecursoExistente(String path)
+    {
+
+        boolean rta= false;
+        File recurso = new File(path);
+        if(!recurso.exists() ||!recurso.isFile())
+        {
+            rta = true;
+        }
+        return rta;
+    }
     private void initComponents(String pathFondo) {
 
         jMenuPrincipal = new javax.swing.JPanel();
@@ -88,9 +100,21 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         {
             ImageIcon icon = new ImageIcon(pathFondo); // ruta
             Image img = icon.getImage();
+
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+               if(pathFondo == null||pathFondo.equalsIgnoreCase(""))
+               {
+                    icon = new ImageIcon("src/main/resources/fondoDefault.png"); // ruta
+                    img = icon.getImage();
+                   g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+                   System.out.println("HOLAAAA");
+               }
+               else
+               {
+                   g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
+                   System.out.println("HOLAAAA2");
+               }
             }
         };
 
