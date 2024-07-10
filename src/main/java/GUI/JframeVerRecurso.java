@@ -34,6 +34,7 @@ public class JframeVerRecurso extends javax.swing.JFrame {
 
                    if(!JframeMenuPrincipal.getConexionBD().verificarRepetidoXtitulo(JframeMenuPrincipal.getControladorNASAAPI().getApodClase()))
                    {
+                       JframeMenuPrincipal.getControladorNASAAPI().hacerPDFConRecursoAPI();//creo el pdf con los datos de la NASA que estoy por subir y luego tambien se sube
                        JframeMenuPrincipal.getConexionBD().cargarDato(JframeMenuPrincipal.getControladorNASAAPI().getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
                    }
                    else
