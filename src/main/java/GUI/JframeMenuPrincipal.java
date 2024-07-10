@@ -28,7 +28,8 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jTitulo;
     private javax.swing.JButton jVerBaseDatos;
     private javax.swing.JButton jVerFotoVideo;
-    private static Controlador controlador = null;
+    private static Controlador controladorNASAAPI = null;
+    private static ConectarBaseDeDatosMySql conexionBD = null;
     // End of variables declaration
 
     public JframeMenuPrincipal(String pathFondo)
@@ -37,8 +38,8 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         try
         {
             conectarAPINASA();//me conecto con APOD api
-            ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos local
-        } catch (ClassNotFoundException e) 
+            conectarBD();//me conecto con la base de datos local
+        } catch (ClassNotFoundException e)
         {
             //todo agregar POPUP
             e.printStackTrace();
@@ -63,36 +64,41 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         setIconImage(imageIcon.getImage());
         setVisible(true);
     }
-    public static void conectarAPINASA() throws JSONException, IOException {
+    public static void conectarAPINASA() throws JSONException, IOException
+    {
         /** API NASA APOD */
-       if(controlador == null)
+       if(controladorNASAAPI == null)
        {
-           controlador= new Controlador();
-           controlador.cargarCliente();//me conecto con la API
+           controladorNASAAPI = new Controlador();
+           controladorNASAAPI.cargarCliente();//me conecto con la API
        }
-        //       else
-//       {
-//           //todo agregar popup de error con la conexion
-//       }
 
+
+    }
+    public static void conectarBD() throws SQLException, ClassNotFoundException
+    {
+        if(conexionBD == null)
+        {
+            conexionBD = new ConectarBaseDeDatosMySql();
+        }
     }
     public static void descargarRecursoAPINASA()
     {
-       if(controlador != null)
+       if(controladorNASAAPI != null)
        {
-           if(!controlador.getApodClase().isRecurso()|| verificarSiNoExisteElArchivo("src/main/resources/location_NASA.jpg")|| verificarSiNoExisteElArchivo("src/main/resources/video.mp4"))//si el recurso es false o si no existe la imagen la descargo
+           if(!controladorNASAAPI.getApodClase().isRecurso()|| verificarSiNoExisteElArchivo("src/main/resources/location_NASA.jpg")|| verificarSiNoExisteElArchivo("src/main/resources/video.mp4"))//si el recurso es false o si no existe la imagen la descargo
            {
-               if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("image"))
+               if(controladorNASAAPI.getApodClase().getMedia_type().equalsIgnoreCase("image"))
                {
                    System.out.println("image");
-                   controlador.descargarImagenAPI();//descargo la imagen del dia
+                   controladorNASAAPI.descargarImagenAPI();//descargo la imagen del dia
                }
-               else if(controlador.getApodClase().getMedia_type().equalsIgnoreCase("video"))
+               else if(controladorNASAAPI.getApodClase().getMedia_type().equalsIgnoreCase("video"))
                {
                    System.out.println("video");
-                   controlador.descargarVideoAPI();
+                   controladorNASAAPI.descargarVideoAPI();
                }
-               controlador.getApodClase().setRecurso(true);
+               controladorNASAAPI.getApodClase().setRecurso(true);
            }
 //           else
 //           {
