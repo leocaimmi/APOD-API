@@ -4,11 +4,15 @@
  */
 package GUI;
 
+import BBDD.ConectarBaseDeDatosMySql;
 import ControladorAPI.Controlador;
+import org.json.JSONException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  *
@@ -30,7 +34,27 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
     public JframeMenuPrincipal(String pathFondo)
     {
         //Apertura API NASA
-        conectarAPINASA();
+        try
+        {
+            conectarAPINASA();//me conecto con APOD api
+            ConectarBaseDeDatosMySql conectarBaseDeDatosMySql = new ConectarBaseDeDatosMySql();//me conecto con la base de datos local
+        } catch (ClassNotFoundException e) 
+        {
+            //todo agregar POPUP
+            e.printStackTrace();
+        } catch (SQLException e)
+        {
+            //todo agregar POPUP
+            e.printStackTrace();
+        } catch (JSONException e)
+        {
+            //todo agregar POPUP
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            //todo agregar POPUP
+            e.printStackTrace();
+        }
         initComponents(pathFondo);
 
         setResizable(false);
@@ -39,8 +63,7 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
         setIconImage(imageIcon.getImage());
         setVisible(true);
     }
-    public static void conectarAPINASA()
-    {
+    public static void conectarAPINASA() throws JSONException, IOException {
         /** API NASA APOD */
        if(controlador == null)
        {

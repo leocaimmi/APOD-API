@@ -58,7 +58,7 @@ public class Controlador {
 
 
     //metodos
-    public boolean cargarCliente() {
+    public boolean cargarCliente() throws IOException, JSONException {
         BufferedReader in = null;
         boolean rta = false;//"GET request failed: " + codigoRespuesta
 
@@ -97,17 +97,17 @@ public class Controlador {
             }
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            throw e;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         } catch (JSONException e) {
-            e.printStackTrace();
+            throw e;
         } finally {
             try {
                 in.close();// Cierra el BufferedReader
                 rta = true;
             } catch (IOException e) {
-                e.printStackTrace();
+                 throw e;
             }
 
         }

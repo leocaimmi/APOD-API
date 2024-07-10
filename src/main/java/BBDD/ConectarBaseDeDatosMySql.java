@@ -16,17 +16,17 @@ public class ConectarBaseDeDatosMySql {
     private Connection connection;
 
     //constructores
-    public ConectarBaseDeDatosMySql() {
+    public ConectarBaseDeDatosMySql() throws ClassNotFoundException, SQLException {
         try {
             Class.forName(driver);//me permite cargar el driver
             connection = DriverManager.getConnection(urlBaseDatos, usuario, contrasenia);
             System.out.println("La base de datos ha sido conectada correctamente");
         } catch (ClassNotFoundException e) {
 
-            e.printStackTrace();
+            throw e;
         } catch (SQLException e) {
 
-            e.printStackTrace();
+            throw e;
         }
     }
     //getters y setters
