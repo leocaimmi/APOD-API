@@ -11,6 +11,7 @@ public class APODClase
     private String title;
     private String url;
     private boolean recurso;
+    private boolean estoyRepetido;
     //constructores
  public APODClase()
  {
@@ -22,6 +23,7 @@ public class APODClase
     title= "";
     url= "";
    recurso = false;
+   estoyRepetido =false;
  }
 
  public APODClase(String date, String explanation, String hdurl, String media_type, String service_version, String title, String url) {
@@ -33,6 +35,7 @@ public class APODClase
   this.title = title;
   this.url = url;
   recurso = false;
+  estoyRepetido =false;
  }
  //getters y setters
 
@@ -99,6 +102,14 @@ public class APODClase
  public void setRecurso(boolean recurso) {
   this.recurso = recurso;
  }
+
+ public boolean isEstoyRepetido() {
+  return estoyRepetido;
+ }
+
+ public void setEstoyRepetido(boolean estoyRepetido) {
+  this.estoyRepetido = estoyRepetido;
+ }
  //metodos
 
 
@@ -113,6 +124,7 @@ public class APODClase
           ", title='" + title + '\'' +
           ", url='" + url + '\'' +
           ", recurso=" + recurso +
+          ", estoyRepetido=" + estoyRepetido +
           '}';
  }
 }

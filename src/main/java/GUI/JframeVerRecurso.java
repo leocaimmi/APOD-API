@@ -6,6 +6,7 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 /**
  *
@@ -24,6 +25,37 @@ public class JframeVerRecurso extends javax.swing.JFrame {
     public JframeVerRecurso()
     {
         JframeMenuPrincipal.descargarRecursoAPINASA();
+        try
+        {
+           if(!JframeMenuPrincipal.getControladorNASAAPI().getApodClase().isEstoyRepetido())//si es false quiere decir que no estoy en la base de datos
+           {
+               if(!JframeMenuPrincipal.conectarBD())//false si ya existe la base de datos
+               {
+
+                   if(!JframeMenuPrincipal.getConexionBD().verificarRepetidoXtitulo(JframeMenuPrincipal.getControladorNASAAPI().getApodClase()))
+                   {
+                       JframeMenuPrincipal.getConexionBD().cargarDato(JframeMenuPrincipal.getControladorNASAAPI().getApodClase());//con lo que obtenemos de la API lo subimos a la base de datos
+                   }
+                   else
+                   {
+                       System.out.println("estoy repetido\n");
+                       //todo agregar POPUP
+                   }
+                   JframeMenuPrincipal.getControladorNASAAPI().getApodClase().setEstoyRepetido(true);
+               }
+           }else
+           {
+               System.out.println("estoy repetido\n");
+               //todo agregar POPUP
+           }
+
+        } catch (SQLException e) {
+           e.printStackTrace();
+           //todo agregar POPUP
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            //todo agregar POPUP
+        }
         //JfrEsperaPopUp JfrEsperaPopUp = new JfrEsperaPopUp(this,"Descargando recurso");
         initComponents();
         setResizable(false);

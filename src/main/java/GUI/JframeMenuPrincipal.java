@@ -75,12 +75,15 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
 
 
     }
-    public static void conectarBD() throws SQLException, ClassNotFoundException
+    public static boolean conectarBD() throws SQLException, ClassNotFoundException
     {
+        boolean rta  =false;
         if(conexionBD == null)
         {
             conexionBD = new ConectarBaseDeDatosMySql();
+            rta = true;
         }
+        return rta;//false si ya hay conexion, true si se genero la conexion
     }
     public static void descargarRecursoAPINASA()
     {
@@ -282,6 +285,14 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+    }
+
+    public static Controlador getControladorNASAAPI() {
+        return controladorNASAAPI;
+    }
+
+    public static ConectarBaseDeDatosMySql getConexionBD() {
+        return conexionBD;
     }
 }
 
