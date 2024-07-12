@@ -6,6 +6,7 @@ package GUI;
 
 import BBDD.ConectarBaseDeDatosMySql;
 import ControladorAPI.Controlador;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.json.JSONException;
 
 import javax.swing.*;
@@ -268,8 +269,41 @@ public class JframeMenuPrincipal extends javax.swing.JFrame {
 
     private void jBotonGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
+        JfrEsperaPopUp popUp = new JfrEsperaPopUp((Frame) SwingUtilities.getWindowAncestor(this), "Generando PDF...");
+        popUp.showWindow();
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception //Permite trabajar en un segundo plano
+            {
+
+                if (controladorNASAAPI.getApodClase().isRecurso())//si tengo un recurso del dia
+                {
+                    controladorNASAAPI.hacerPDFConRecursoAPI();
+                    try
+                    {
+                        controladorNASAAPI.abrirPDF("TextoNASAAPI.pdf");
+                    }catch (IOException e)
+                    {
+                        e.printStackTrace();
+                        //todo agregar popup
+                    }
+
+                }
+                return null;
+            }
+            @Override
+            protected void done() { //Este metodo oculta la ventana
+
+                popUp.hideWindow();
+                //JOptionPane.showMessageDialog(null, "Codigo QR generado correctamente!");
+            }
+
+        };
+        worker.execute();
 
     }
+
+
 
     private void jVerBaseDatosActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO add your handling code here:
