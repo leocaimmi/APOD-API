@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -248,6 +249,20 @@ public class Controlador {
         }
 
         return rta;
+    }
+    public void abrirPDF(String path) throws IOException {
+
+        File file = new File(path);
+        if(file.exists()||file.isFile())//si existo o es un archivo es correcto
+        {
+           if(Desktop.isDesktopSupported())
+           {
+               Desktop.getDesktop().open(file);
+
+           }
+
+        }
+
     }
 
     @Override
